@@ -14,7 +14,7 @@ namespace bukreev
 
     void monteCarloWorker(
         const std::vector< Figure >& figures,
-        BoundingBox box,
+        const BoundingBox box,
         size_t tries, size_t seed,
         AreaResult& res
     );
@@ -52,7 +52,7 @@ bukreev::AreaResult bukreev::monteCarlo(
     {
         threadVec.emplace_back(
             monteCarloWorker,
-            std::cref(figures), std::cref(box),
+            figures, box,
             tries, seed + i, std::ref(results[i])
         );
     }
