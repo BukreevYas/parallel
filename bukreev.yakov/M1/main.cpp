@@ -15,7 +15,7 @@ int main(int argc, char* argv[])
     {
         bukreev::parseArgs(argc, argv, threads, tries, seed);
     }
-    catch(const std::exception& e)
+    catch (const std::exception& e)
     {
         std::cerr << e.what() << '\n';
         return 1;
@@ -26,7 +26,7 @@ int main(int argc, char* argv[])
     {
         bukreev::getFigures(std::cin, figures);
     }
-    catch(const std::exception& e)
+    catch (const std::exception& e)
     {
         std::cerr << e.what() << '\n';
         return 1;
