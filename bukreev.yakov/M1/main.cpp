@@ -1,14 +1,9 @@
 #include <iostream>
 #include <vector>
+#include "montecarlo.hpp"
 
 namespace bukreev
 {
-    struct Figure
-    {
-        size_t r;
-        int cx, cy;
-    };
-
     void parseArgs(int argc, char* argv[], size_t& threads, size_t& tries, size_t& seed);
     std::istream& getFigures(std::istream& in, std::vector< Figure >& figures);
 }
@@ -36,6 +31,8 @@ int main(int argc, char* argv[])
         std::cerr << e.what() << '\n';
         return 1;
     }
+
+    bukreev::monteCarlo(figures);
 }
 
 void bukreev::parseArgs(int argc, char* argv[], size_t& threads, size_t& tries, size_t& seed)
