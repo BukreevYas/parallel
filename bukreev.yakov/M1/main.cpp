@@ -54,7 +54,7 @@ void bukreev::parseArgs(int argc, char* argv[], size_t& threads, size_t& tries, 
     int itries = std::atoi(argv[2]);
     if (itries <= 0)
     {
-        throw std::logic_error("Negative tries number");
+        throw std::logic_error("Non-positive tries number");
     }
 
     int iseed = 0;
