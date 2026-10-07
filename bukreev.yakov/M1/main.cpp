@@ -32,7 +32,8 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    bukreev::monteCarlo(figures);
+    bukreev::AreaResult res = bukreev::monteCarlo(figures, threads, tries, seed);
+    std::cout << res.total << ' ' << res.intersection << '\n';
 }
 
 void bukreev::parseArgs(int argc, char* argv[], size_t& threads, size_t& tries, size_t& seed)

@@ -1,15 +1,11 @@
 #include "montecarlo.hpp"
-#include <algorithm>
-#include <iostream>
-#include <limits>
 #include <random>
+#include <thread>
 
 namespace bukreev
 {
     struct BoundingBox
     {
-        constexpr static int init = std::numeric_limits< int >::max();
-        BoundingBox(): left(init), right(init), top(init), bottom(init) {}
         int left;
         int right;
         int top;
@@ -26,9 +22,20 @@ namespace bukreev
     bool isInside(double x, double y, Figure f);
 }
 
-bukreev::AreaResult bukreev::monteCarlo(const std::vector< Figure >& figures)
+bukreev::AreaResult bukreev::monteCarlo(
+    const std::vector< Figure >& figures,
+    size_t threads, size_t tries, size_t seed
+)
 {
     BoundingBox box;
+    if (!figures.empty())
+    {
+        Figure f = figures.front();
+        box.left = f.cx - f.r;
+        box.right = f.cx + f.r;
+        box.top = f.cy + f.r;
+        box.bottom = f.cy - f.r;
+    }
     for (const Figure& f : figures)
     {
         box.left = std::min(box.left, f.cx - f.r);
@@ -36,7 +43,35 @@ bukreev::AreaResult bukreev::monteCarlo(const std::vector< Figure >& figures)
         box.right = std::max(box.right, f.cx + f.r);
         box.top = std::max(box.top, f.cy + f.r);
     }
-    return {};
+
+    std::vector< std::thread > threadVec;
+    threadVec.reserve(threads);
+    std::vector< AreaResult > results(threads);
+
+    for (size_t i = 0; i < threads; i++)
+    {
+        threadVec.emplace_back(
+            monteCarloWorker,
+            std::cref(figures), std::cref(box),
+            tries, seed + i, std::ref(results[i])
+        );
+    }
+    for (size_t i = 0; i < threads; i++)
+    {
+        threadVec[i].join();
+    }
+
+    AreaResult finalResult{0, 0};
+    for (const AreaResult r : results)
+    {
+        finalResult.total += r.total;
+        finalResult.intersection += r.intersection;
+    }
+
+    double boxArea = (box.right - box.left) * (box.top - box.bottom);
+    finalResult.total = finalResult.total / threads * boxArea;
+    finalResult.intersection = finalResult.intersection / threads * boxArea;
+    return finalResult;
 }
 
 void bukreev::monteCarloWorker(
