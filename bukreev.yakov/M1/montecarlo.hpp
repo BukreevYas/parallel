@@ -6,24 +6,24 @@
 
 namespace bukreev
 {
-    struct Figure
-    {
-        int r;
-        int cx, cy;
-    };
+  struct Figure
+  {
+    int r;
+    int cx, cy;
+  };
 
-    struct AreaResult
-    {
-        double total;
-        double intersection;
-    };
+  struct AreaResult
+  {
+    double total;
+    double intersection;
+  };
 
-    AreaResult monteCarlo(
-        const std::vector< Figure >& figures,
-        size_t threads,
-        size_t tries,
-        size_t seed
-    );
+  AreaResult monteCarlo(
+    const std::vector< Figure >& figures,
+    size_t threads,
+    size_t tries,
+    size_t seed
+  );
 }
 
 #endif
